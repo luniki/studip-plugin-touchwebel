@@ -39,8 +39,11 @@ class Courses extends Backbone.Collection
 window.Courses = Courses
 ###########################################################################
 
+compileTemplate = (name) ->
+  Mustache.compile $("#tw-template-#{name}").html()
+
 class window.HomeView extends Backbone.View
-  template: _.template $('#tw-template-home').html()
+  template: compileTemplate("home")
 
   render: (eventName) ->
     $(@el).html @template({})
@@ -48,30 +51,39 @@ class window.HomeView extends Backbone.View
 
 
 class window.MyCoursesView extends Backbone.View
-  template: _.template $('#tw-template-my-courses').html()
+  template: compileTemplate("my-courses")
 
   initialize: () ->
-    @collection.on 'add',   @addOne, @
-    @collection.on 'reset', @addAll, @
-    #@collection.on 'all',   @render, @
-    @collection.fetch add: true
+    #@collection.on 'add',   @addOne, @
+    @collection.on 'reset', @onReset, @
+    @collection.on 'all',   (event) -> console.log "MCV: ", event, arguments
 
   addOne: (course, collection) ->
-    console.log "addOne", arguments
+    #console.log "addOne", arguments
     @$el.find("[data-role=content]").append "<p>#{course.get('title')}</p>"
     #view = new TodoView({model: todo});
     #  this.$("#todo-list").append(view.render().el);
 
-  addAll: () ->
-    # missing
+  onReset: (collection) ->
+    @collection = collection
+
+    template = @template
+      courses: @collection.toJSON()
+
+    @$el.page("destroy")
+    @render()
+    @$el.page()
+    @$("ul").listview()
+
 
   render: (eventName) ->
-    $(@el).html @template({})
+    @$el.html @template
+      courses: @collection.toJSON()
     @
 
 
 class window.LoginView extends Backbone.View
-  template: _.template $('#tw-template-login').html()
+  template: compileTemplate("login")
 
   render: (eventName) ->
     $(@el).html @template({})
@@ -98,7 +110,7 @@ class window.LoginView extends Backbone.View
 
 
 ###########################################################################
-withPermission = () ->
+requireSession = () ->
   (callback) ->
     ->
       if $Session.authenticated()
@@ -118,12 +130,12 @@ AppRouter = Backbone.Router.extend
     "my-courses": "myCourses"
 
   home:
-    withPermission() \
+    requireSession() \
     ->
       @changePage new HomeView()
 
   myCourses:
-    withPermission() \
+    requireSession() \
     ->
       courses = new Courses()
       @changePage new MyCoursesView(collection: courses)

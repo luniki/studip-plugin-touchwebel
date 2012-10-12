@@ -21,6 +21,7 @@
 
     <script src="<?= htmlReady($assets_url) ?>/js/jquery-1.8.2.js"></script>
     <script src="<?= htmlReady($assets_url) ?>/js/underscore.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/mustache.js"></script>
     <script src="<?= htmlReady($assets_url) ?>/js/backbone.js"></script>
 
     <script src="<?= htmlReady($assets_url) ?>/js/touchwebel-config.js"></script>

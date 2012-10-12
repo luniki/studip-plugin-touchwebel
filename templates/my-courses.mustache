@@ -1,11 +1,15 @@
 <div data-role="header">
   <h1>My Courses</h1>
-</div><!-- /header -->
+</div>
 
 <div data-role="content">
-42
-</div><!-- /content -->
+  <ul>
+    {{#courses}}
+      <li>{{title}}</li>
+    {{/courses}}
+  </ul>
+</div>
 
 <div data-role="footer">
   <h4>Page Footer</h4>
-</div><!-- /footer -->
+</div>

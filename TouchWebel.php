@@ -35,19 +35,72 @@ class TouchWebel extends StudipPlugin
                                                  $this->getTemplateArgs());
     }
 
+    function login_action()
+    {
+        $username = Request::get("username");
+        $password = Request::get("password");
+
+        if (isset($username) && isset($password)) {
+            $result = StudipAuthAbstract::CheckAuthentication($username, $password);
+        }
+
+        if (!isset($result) || $result['uid'] === false) {
+            $this->fail(401, "Login Failed");
+            return;
+        }
+
+        $id = get_userid($username);
+        if (isset($id)) {
+            $this->start_session($id);
+        }
+
+        echo json_encode(array('id' => $id, 'name' => $username));
+    }
+
 
     private function getTemplateFactory()
     {
-        require_once 'vendor/flexi/lib/mustache_template.php';
         $factory = new Flexi_TemplateFactory(dirname(__FILE__) . '/templates');
-        $factory->add_handler('mustache', 'Flexi_MustacheTemplate');
         return $factory;
     }
 
     private function getTemplateArgs()
     {
-        return array('plugin_url' => $this->getPluginUrl(),
+        return array('assets_url' => $this->getPluginUrl(),
+                     'plugin_url' => PluginEngine::getURL($this, array(), ''),
+                     'api_url'    => PluginEngine::getURL("RestipPlugin", array(), ''),
                      'userid'     => $GLOBALS['user']->id,
                      'username'   => $GLOBALS['user']->username);
+    }
+
+    private function fail($code, $reason)
+    {
+        header(sprintf('HTTP/1.1 %d %s', $code, $reason), TRUE, $code);
+    }
+
+    private function start_session($user_id)
+    {
+        global $perm, $user, $auth, $sess, $forced_language, $_language;
+
+
+        $user = new Seminar_User();
+        $user->start($user_id);
+
+        foreach (array(
+                     "uid" => $user_id,
+                     "perm" => $user->perms,
+                     "uname" => $user->username,
+                     "auth_plugin" => $user->auth_plugin,
+                     "exp" => time() + 60 * 15,
+                     "refresh" => time()
+                 ) as $k => $v) {
+            $auth->auth[$k] = $v;
+        }
+
+        $auth->nobody = false;
+
+
+        $sess->regenerate_session_id(array('auth', 'forced_language','_language'));
+        $sess->freeze();
     }
 }
