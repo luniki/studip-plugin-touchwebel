@@ -26,7 +26,11 @@
 
     <script src="<?= htmlReady($assets_url) ?>/js/config.js"></script>
     <script src="<?= htmlReady($assets_url) ?>/js/lib/jquery.mobile-1.2.0.js"></script>
-    <script src="<?= htmlReady($assets_url) ?>/js/main.js"></script>
+
+    <script src="<?= htmlReady($assets_url) ?>/js/bootstrap.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/models.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/views.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/router.js"></script>
 
   </head>
 
