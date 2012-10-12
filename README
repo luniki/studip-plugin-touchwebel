@@ -1,0 +1,6 @@
+Touchwebel is a Stud.IP (http://www.studip.de) plugin providing a
+solid foundation for a dynamic, touch-friendly, client-side UI for
+Stud.IP.
+
+It uses jQuery Mobile and the superb Backbone.js to accomplish these
+goals.
