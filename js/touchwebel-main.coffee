@@ -98,26 +98,42 @@ window.HomeView = Backbone.View.extend
   template: compileTemplate("home")
 
   render: (eventName) ->
-    @$el.html @template
+    @$el.html @template()
     @
 
 ###
-The LoginView renders its template and listens to
+The LoginView renders its template and listens to form submits then
+attempting to login the user:
 ###
 window.LoginView = Backbone.View.extend
   template: compileTemplate("login")
 
   render: (eventName) ->
-    $(@el).html @template({})
+    $(@el).html @template()
     @
 
+  ###
+  listen to submit events and …
+  ###
   events:
-    "click input[type=button]": "attemptLogin"
-    "submit #loginForm":        "attemptLogin"
+    "submit #loginForm": "attemptLogin"
 
-  attemptLogin: () ->
+  attemptLogin: (event) ->
+
+    ###
+    (Make sure to prevent the default action of the form.)
+    ###
+    event.preventDefault()
+
+    ###
+    get the user´s input,
+    ###
     username = @$el.find("input[name=username]").val()
     password = @$el.find("input[name=password]").val()
+
+    ###
+    define the callbacks,
+    ###
     done = (result) ->
       $Session = result
       $App.navigate "#home", trigger: true
@@ -126,35 +142,57 @@ window.LoginView = Backbone.View.extend
     fail = (jqXHR, textStatus) -> console.log "fail", arguments
 
     $.mobile.showPageLoadingMsg()
+
+    ###
+    and authenticate the user.
+    ###
     SessionModel.authenticate username, password, done, fail
 
-    false
+
 ###
+
+The MyCoursesView is the most complicated of the views. Its
+responsibilities are:
+
+  * to render an empty list <ul/>
+  * listen to its collection
+  * if an item is added to the collection,
+    add a list item to the list
+  * if multiple items are added to the collection
+    (e.g. after a fetch or reset),
+    add every single item to the list.
 
 ###
 window.MyCoursesView = Backbone.View.extend
   template: compileTemplate("my-courses")
 
+  ###
+  Listen to the events of the collection.
+  ###
   initialize: () ->
     @collection.on 'add',   @addOne, @
     @collection.on 'reset', @addAll, @
     return
 
-  $content: (selector = "")->
-    @$ "[data-role=content] #{selector}"
-
+  ###
+  Adding a single item consists of creating a view for that item and
+  of appending the rendered view to the <ul/> element and then refresh
+  the listview.
+  ###
   addOne: (course, collection) ->
     item = new MyCoursesItemView model: course
-    @$content("ul").append item.render().el
+    @$("ul").append(item.render().el).listview('refresh')
     return
 
+  ###
+  Adding a collection of items by adding every single one with #addOne.
+  ###
   addAll: (collection) ->
     _.each collection.models, ((course) -> @addOne course), @
-    @$content("ul").listview()
     return
 
-  render: (eventName) ->
-    @$el.html @template courses: @collection.toJSON()
+  render: () ->
+    @$el.html @template()
     @
 
 #  onReset: (collection) ->
@@ -165,6 +203,7 @@ window.MyCoursesView = Backbone.View.extend
 #    @render()
 #    @$el.page()
 #    @$("ul").listview()
+
 
 ###
 Each item in the list of my courses has an own view. This way it is
@@ -179,10 +218,10 @@ window.MyCoursesItemView = Backbone.View.extend
   tagName: "li"
 
   ###
-  Just as an example…
+  Just as an example, a listener for dblclick…
   ###
   events:
-    "swipe": ()-> alert JSON.stringify @model
+    "dblclick": ()-> alert JSON.stringify @model
 
   template: compileTemplate("my-courses-item")
 
@@ -193,11 +232,17 @@ window.MyCoursesItemView = Backbone.View.extend
     @$el.html @template @model.toJSON()
     @
 
+###
+***************************************************************************
+* ROUTING
+***************************************************************************
+###
 
 
-
-
-###########################################################################
+###
+A function combinator that makes ensures that the callback is only
+valid for authorised users. Otherwise `redirect` to the #login page.
+###
 requireSession = () ->
   (callback) ->
     ->
@@ -206,22 +251,40 @@ requireSession = () ->
       else
         @navigate "login", trigger: true
 
+###
+The singleton AppRouter containing the handlers for all the routes.
+###
 AppRouter = Backbone.Router.extend
 
+  ###
+  @firstPage is used to prevent sliding in the first page.
+  ###
   initialize: () ->
     @firstPage = true
 
   routes:
-    "":            "home"
-    "home":        "home"
+    "":           "home"
+    "home":       "home"
     "login":      "login"
     "my-courses": "myCourses"
+    "course/:id": "course"
 
+  ###
+  Authorised route changing page to a HomeView.
+  ###
   home:
     requireSession() \
     ->
       @changePage new HomeView()
 
+  ###
+  Authorised route changing page to a MyCoursesView.
+
+  It instantiates a course collection, changes the page to the
+  MyCoursesView (parameterized with that collection) and fetches the
+  collection from the server. (In the process the view gets notified
+  and renders itself.)
+  ###
   myCourses:
     requireSession() \
     ->
@@ -229,11 +292,29 @@ AppRouter = Backbone.Router.extend
       @changePage new MyCoursesView(collection: courses)
       courses.fetch()
 
+  ###
+  Just a dummy, authorised route handler. To be continued …
+  ###
+  course:
+    requireSession() \
+    (id) ->
+      alert "Show course: '#{id}'"
+
+  ###
+  Authorised route changing page to a HomeView.
+  ###
   login:
     () ->
       @changePage new LoginView()
 
+  ###
+  Internal function to be used by the route handlers.
 
+  `page` is a Backbone.View which is added as a jQuery mobile page to
+  the pageContainer. Eventually, after all the setup mojo and
+  everything is in place, the `jQuery mobile way`(TM) of changing
+  pages is invoked.
+  ###
   changePage: (page) ->
     $(page.el).attr('data-role', 'page')
     page.render()
@@ -248,11 +329,16 @@ AppRouter = Backbone.Router.extend
       changeHash: false
       transition: transition
 
-#
-#
-#
 
+###
+***************************************************************************
+* BOOTSTRAP
+***************************************************************************
+###
 
+###
+Initialize the router and start Backbone hash listening magic
+###
 $(document).ready () ->
   $App = new AppRouter()
   Backbone.history.start()

@@ -20,15 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class TouchWebel extends StudipPlugin
+class TouchWebel extends StudipPlugin implements SystemPlugin
 {
-    function __construct()
-    {
-        parent::__construct();
-
-        # do something
-    }
-
     function show_action()
     {
         echo $this->getTemplateFactory()->render('index',
