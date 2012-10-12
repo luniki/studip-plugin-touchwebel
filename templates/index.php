@@ -19,14 +19,14 @@
 
     <?= $this->render_partial("_include_js_templates") ?>
 
-    <script src="<?= htmlReady($assets_url) ?>/js/jquery-1.8.2.js"></script>
-    <script src="<?= htmlReady($assets_url) ?>/js/underscore.js"></script>
-    <script src="<?= htmlReady($assets_url) ?>/js/mustache.js"></script>
-    <script src="<?= htmlReady($assets_url) ?>/js/backbone.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/lib/jquery-1.8.2.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/lib/underscore.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/lib/mustache.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/lib/backbone.js"></script>
 
-    <script src="<?= htmlReady($assets_url) ?>/js/touchwebel-config.js"></script>
-    <script src="<?= htmlReady($assets_url) ?>/js/jquery.mobile-1.2.0.js"></script>
-    <script src="<?= htmlReady($assets_url) ?>/js/touchwebel-main.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/config.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/lib/jquery.mobile-1.2.0.js"></script>
+    <script src="<?= htmlReady($assets_url) ?>/js/main.js"></script>
 
   </head>
 
