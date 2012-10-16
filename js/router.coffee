@@ -21,19 +21,13 @@
 ###
 
 ###
-***************************************************************************
-* ROUTING
-***************************************************************************
-###
-
-###
 A function combinator that makes ensures that the callback is only
 valid for authorised users. Otherwise `redirect` to the #login page.
 ###
 requireSession = () ->
   (callback) ->
     ->
-      if $Session.authenticated()
+      if tw.$Session.authenticated()
         callback.apply(this, arguments)
       else
         @navigate "login", trigger: true
@@ -43,7 +37,7 @@ requireSession = () ->
 ###
 The singleton AppRouter containing the handlers for all the routes.
 ###
-window.AppRouter = Backbone.Router.extend
+tw.router.AppRouter = Backbone.Router.extend
 
   ###
   @firstPage is used to prevent sliding in the first page.
@@ -64,7 +58,7 @@ window.AppRouter = Backbone.Router.extend
   home:
     requireSession() \
     ->
-      @changePage new HomeView()
+      @changePage new tw.ui.HomeView()
 
   ###
   Authorised route changing page to a MyCoursesView.
@@ -77,9 +71,9 @@ window.AppRouter = Backbone.Router.extend
   myCourses:
     requireSession() \
     ->
-      courses = new Courses()
-      @changePage new MyCoursesView(collection: courses)
+      courses = new tw.model.Courses()
       courses.fetch()
+      @changePage new tw.ui.MyCoursesView(collection: courses)
 
   ###
   Just a dummy, authorised route handler. To be continued …
@@ -94,7 +88,7 @@ window.AppRouter = Backbone.Router.extend
   ###
   login:
     () ->
-      @changePage new LoginView()
+      @changePage new tw.ui.LoginView()
 
   ###
   Internal function to be used by the route handlers.

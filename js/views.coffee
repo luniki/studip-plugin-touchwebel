@@ -20,14 +20,6 @@
 # SOFTWARE.
 ###
 
-
-###
-***************************************************************************
-* VIEWS
-***************************************************************************
-###
-
-
 ###
 We use Mustache as template engine. This function makes it a lot
 easier to get a pre-compiled Mustache template.
@@ -39,7 +31,7 @@ compileTemplate = (name) ->
 ###
 The HomeView just renders the "home" template.
 ###
-window.HomeView = Backbone.View.extend
+tw.ui.HomeView = Backbone.View.extend
   template: compileTemplate("home")
 
   render: (eventName) ->
@@ -50,7 +42,7 @@ window.HomeView = Backbone.View.extend
 The LoginView renders its template and listens to form submits then
 attempting to login the user:
 ###
-window.LoginView = Backbone.View.extend
+tw.ui.LoginView = Backbone.View.extend
   template: compileTemplate("login")
 
   render: (eventName) ->
@@ -80,8 +72,8 @@ window.LoginView = Backbone.View.extend
     define the callbacks,
     ###
     done = (result) ->
-      window.$Session = result
-      window.$App.navigate "#home", trigger: true
+      tw.$Session = result
+      tw.$App.navigate "#home", trigger: true
 
     # TODO
     fail = (jqXHR, textStatus) -> console.log "fail", arguments
@@ -91,7 +83,7 @@ window.LoginView = Backbone.View.extend
     ###
     and authenticate the user.
     ###
-    SessionModel.authenticate username, password, done, fail
+    tw.model.Session.authenticate username, password, done, fail
 
 
 ###
@@ -107,7 +99,7 @@ responsibilities are:
     add every single item to the list.
 
 ###
-window.MyCoursesView = Backbone.View.extend
+tw.ui.MyCoursesView = Backbone.View.extend
   template: compileTemplate("my-courses")
 
   ###
@@ -124,8 +116,10 @@ window.MyCoursesView = Backbone.View.extend
   the listview.
   ###
   addOne: (course, collection) ->
-    item = new MyCoursesItemView model: course
-    @$("ul").append(item.render().el).listview('refresh')
+    item = new tw.ui.MyCoursesItemView model: course
+    ul = @$("ul")
+    ul.append(item.render().el)
+    ul.listview('refresh') if @el.parentNode
     return
 
   ###
@@ -137,6 +131,7 @@ window.MyCoursesView = Backbone.View.extend
 
   render: () ->
     @$el.html @template()
+    @addAll @collection
     @
 
 #  onReset: (collection) ->
@@ -154,7 +149,7 @@ Each item in the list of my courses has an own view. This way it is
 lot easier to add it to the list of courses and to offer additional
 actions for each one.
 ###
-window.MyCoursesItemView = Backbone.View.extend
+tw.ui.MyCoursesItemView = Backbone.View.extend
 
   ###
   Each item is a <li/>.

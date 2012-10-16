@@ -20,20 +20,13 @@
 # SOFTWARE.
 ###
 
-
 ###
-***************************************************************************
-* MODELS
-***************************************************************************
+Session is not the typical Model as one does not want to store the
+password on the client side. So this is just a simple class to hold
+the user`s name and id and to create a new instance by providing the
+credentials.
 ###
-
-###
-SessionModel is not the typical Model as one does not want to store
-the password on the client side. So this is just a simple class to
-hold the user`s name and id and to create a new instance by providing
-the credentials.
-###
-class window.SessionModel
+class tw.model.Session
 
   @authenticate: (username, password, done, fail) ->
 
@@ -54,11 +47,11 @@ class window.SessionModel
     xhr.fail fail if fail
 
     ###
-    Create a new SessionModel off the response and call the done
+    Create a new Session off the response and call the done
     callback, if there is one.
     ###
     xhr.done (msg) ->
-      session = new SessionModel msg
+      session = new tw.model.Session msg
       done(session) if done
 
     return
@@ -80,7 +73,7 @@ Simple wrapper around the RestipPlugin endpoint '/api/courses'.
 Needs a custom response parser, as it is namespaced like this:
 {courses: [{<1st course>}, {<2nd course>}, ...]}
 ###
-window.Courses = Backbone.Collection.extend
+tw.model.Courses = Backbone.Collection.extend
   url: ->
     "#{API_URL}api/courses"
 

@@ -21,10 +21,12 @@
 ###
 
 ###
-***************************************************************************
-* BOOTSTRAP
-***************************************************************************
+Provide top-level namespaces for our javascript.
 ###
+window.tw ||=
+  model: {}
+  router: {}
+  ui: {}
 
 ###
 Initialize the router and start Backbone hash listening magic
@@ -36,12 +38,12 @@ $(document).ready () ->
   pre-populate the global $Session (the initial $ indicates a global
   variable) with these. This way we spare us an initial AJAX call.
   ###
-  window.$Session = new SessionModel USER
+  tw.$Session = new tw.model.Session USER
 
   ###
   Declare the global $App object (the initial $ indicates a global
   variable). We need it to dynamically navigate between routes etc.
   ###
-  window.$App = new AppRouter()
+  tw.$App = new tw.router.AppRouter()
 
   Backbone.history.start()
