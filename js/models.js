@@ -42,7 +42,7 @@ credentials.
 
       var xhr;
       xhr = $.ajax({
-        url: "" + PLUGIN_URL + "login",
+        url: "" + tw.PLUGIN_URL + "login",
         dataType: 'json',
         data: {
           username: username,
@@ -98,7 +98,7 @@ credentials.
 
   tw.model.Courses = Backbone.Collection.extend({
     url: function() {
-      return "" + API_URL + "api/courses";
+      return "" + tw.API_URL + "api/courses";
     },
     parse: function(response) {
       return response != null ? response.courses : void 0;

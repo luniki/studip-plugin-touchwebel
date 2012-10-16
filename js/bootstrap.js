@@ -45,14 +45,14 @@ Provide top-level namespaces for our javascript.
       pre-populate the global $Session (the initial $ indicates a global
       variable) with these. This way we spare us an initial AJAX call.
     */
-    tw.$Session = new tw.model.Session(USER);
+    tw.$Session = new tw.model.Session(tw.USER);
     /*
       Declare the global $App object (the initial $ indicates a global
       variable). We need it to dynamically navigate between routes etc.
     */
 
     tw.$App = new tw.router.AppRouter();
-    return Backbone.history.start();
+    Backbone.history.start();
   });
 
 }).call(this);

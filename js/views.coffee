@@ -46,7 +46,7 @@ tw.ui.LoginView = Backbone.View.extend
   template: compileTemplate("login")
 
   render: (eventName) ->
-    $(@el).html @template()
+    @$el.html @template()
     @
 
   ###

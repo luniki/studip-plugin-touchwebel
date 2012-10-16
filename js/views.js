@@ -56,7 +56,7 @@ easier to get a pre-compiled Mustache template.
   tw.ui.LoginView = Backbone.View.extend({
     template: compileTemplate("login"),
     render: function(eventName) {
-      $(this.el).html(this.template());
+      this.$el.html(this.template());
       return this;
     },
     /*

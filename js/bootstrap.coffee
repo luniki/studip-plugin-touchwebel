@@ -38,7 +38,7 @@ $(document).ready () ->
   pre-populate the global $Session (the initial $ indicates a global
   variable) with these. This way we spare us an initial AJAX call.
   ###
-  tw.$Session = new tw.model.Session USER
+  tw.$Session = new tw.model.Session tw.USER
 
   ###
   Declare the global $App object (the initial $ indicates a global
@@ -47,3 +47,4 @@ $(document).ready () ->
   tw.$App = new tw.router.AppRouter()
 
   Backbone.history.start()
+  return

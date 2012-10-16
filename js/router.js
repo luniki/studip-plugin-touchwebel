@@ -69,7 +69,7 @@ valid for authorised users. Otherwise `redirect` to the #login page.
     */
 
     home: requireSession()(function() {
-      return this.changePage(new tw.ui.HomeView());
+      this.changePage(new tw.ui.HomeView());
     }),
     /*
       Authorised route changing page to a MyCoursesView.
@@ -84,7 +84,7 @@ valid for authorised users. Otherwise `redirect` to the #login page.
       var courses;
       courses = new tw.model.Courses();
       courses.fetch();
-      return this.changePage(new tw.ui.MyCoursesView({
+      this.changePage(new tw.ui.MyCoursesView({
         collection: courses
       }));
     }),
@@ -93,14 +93,14 @@ valid for authorised users. Otherwise `redirect` to the #login page.
     */
 
     course: requireSession()(function(id) {
-      return alert("Show course: '" + id + "'");
+      alert("Show course: '" + id + "'");
     }),
     /*
-      Authorised route changing page to a HomeView.
+      Unauthorised route changing page to a HomeView.
     */
 
     login: function() {
-      return this.changePage(new tw.ui.LoginView());
+      this.changePage(new tw.ui.LoginView());
     },
     /*
       Internal function to be used by the route handlers.
@@ -112,16 +112,28 @@ valid for authorised users. Otherwise `redirect` to the #login page.
     */
 
     changePage: function(page) {
+      /*
+          add "data-role=page" to the element of the page, then render and insert into the body
+      */
+
       var transition;
       $(page.el).attr('data-role', 'page');
       page.render();
       $('body').append($(page.el));
+      /*
+          do not use transition for first page
+      */
+
       transition = $.mobile.defaultPageTransition;
       if (this.firstPage) {
         transition = 'none';
         this.firstPage = false;
       }
-      return $.mobile.changePage($(page.el, {
+      /*
+          call the jqm function
+      */
+
+      $.mobile.changePage($(page.el, {
         changeHash: false,
         transition: transition
       }));

@@ -59,6 +59,7 @@ tw.router.AppRouter = Backbone.Router.extend
     requireSession() \
     ->
       @changePage new tw.ui.HomeView()
+      return
 
   ###
   Authorised route changing page to a MyCoursesView.
@@ -74,6 +75,7 @@ tw.router.AppRouter = Backbone.Router.extend
       courses = new tw.model.Courses()
       courses.fetch()
       @changePage new tw.ui.MyCoursesView(collection: courses)
+      return
 
   ###
   Just a dummy, authorised route handler. To be continued …
@@ -82,13 +84,15 @@ tw.router.AppRouter = Backbone.Router.extend
     requireSession() \
     (id) ->
       alert "Show course: '#{id}'"
+      return
 
   ###
-  Authorised route changing page to a HomeView.
+  Unauthorised route changing page to a HomeView.
   ###
   login:
     () ->
       @changePage new tw.ui.LoginView()
+      return
 
   ###
   Internal function to be used by the route handlers.
@@ -99,15 +103,27 @@ tw.router.AppRouter = Backbone.Router.extend
   pages is invoked.
   ###
   changePage: (page) ->
+
+    ###
+    add "data-role=page" to the element of the page, then render and insert into the body
+    ###
     $(page.el).attr('data-role', 'page')
     page.render()
     $('body').append $ page.el
-    transition = $.mobile.defaultPageTransition
 
+    ###
+    do not use transition for first page
+    ###
+    transition = $.mobile.defaultPageTransition
     if @firstPage
       transition = 'none'
       @firstPage = false
 
+    ###
+    call the jqm function
+    ###
     $.mobile.changePage $ page.el,
       changeHash: false
       transition: transition
+
+    return

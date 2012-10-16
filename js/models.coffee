@@ -36,7 +36,7 @@ class tw.model.Session
     unauthorized endpoints as of now.
     ###
     xhr = $.ajax
-        url: "#{PLUGIN_URL}login"
+        url: "#{tw.PLUGIN_URL}login"
         dataType: 'json'
         data: { username: username, password: password }
         type: 'POST'
@@ -75,7 +75,7 @@ Needs a custom response parser, as it is namespaced like this:
 ###
 tw.model.Courses = Backbone.Collection.extend
   url: ->
-    "#{API_URL}api/courses"
+    "#{tw.API_URL}api/courses"
 
   parse: (response) ->
     response?.courses
