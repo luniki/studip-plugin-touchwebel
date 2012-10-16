@@ -122,7 +122,7 @@ tw.router.AppRouter = Backbone.Router.extend
     ###
     call the jqm function
     ###
-    $.mobile.changePage $ page.el,
+    $.mobile.changePage $(page.el),
       changeHash: false
       transition: transition
 

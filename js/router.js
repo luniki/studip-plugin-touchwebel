@@ -133,10 +133,10 @@ valid for authorised users. Otherwise `redirect` to the #login page.
           call the jqm function
       */
 
-      $.mobile.changePage($(page.el, {
+      $.mobile.changePage($(page.el), {
         changeHash: false,
         transition: transition
-      }));
+      });
     }
   });
 

@@ -67,15 +67,32 @@ class tw.model.Session
   authenticated: () ->
     @id isnt "nobody"
 
+###
+Simple wrapper around the RestipPlugin endpoint '/api/courses/:id'
+###
+tw.model.Course = Backbone.Model.extend
+  idAttribute: "course_id"
 
 ###
-Simple wrapper around the RestipPlugin endpoint '/api/courses'.
-Needs a custom response parser, as it is namespaced like this:
-{courses: [{<1st course>}, {<2nd course>}, ...]}
+Another simple wrapper around the RestipPlugin endpoint
+'/api/courses'.  Needs a custom response parser, as it is namespaced
+like this: {courses: [{<1st course>}, {<2nd course>}, ...]}
 ###
 tw.model.Courses = Backbone.Collection.extend
-  url: ->
-    "#{tw.API_URL}api/courses"
 
+  ###
+  Use the tw.model.Course class
+  ###
+  model: tw.model.Course
+
+  ###
+  Set endpoint URL
+  ###
+  url: ->
+    tw.API_URL + "api/courses"
+
+  ###
+  The response is namespaced → de-namespace it.
+  ###
   parse: (response) ->
     response?.courses
