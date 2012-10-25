@@ -1,3 +1,4 @@
+
 /*
 # Copyright (c) 2012 - <mlunzena@uos.de>
 #
@@ -187,6 +188,32 @@ easier to get a pre-compiled Mustache template.
 
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+  });
+
+  /*
+  This view shows the content of a course.
+  */
+
+
+  tw.ui.CourseView = Backbone.View.extend({
+    template: compileTemplate("course"),
+    initialize: function() {
+      /*
+          Listen to changes and re-render
+      */
+      return this.model.on("all", this.render, this);
+    },
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      /*
+          Re-enhance the page, if re-rendering
+      */
+
+      if (this.el.parentNode) {
+        this.$el.page("destroy").page();
+      }
       return this;
     }
   });

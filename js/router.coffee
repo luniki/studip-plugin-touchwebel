@@ -89,12 +89,28 @@ tw.router.AppRouter = Backbone.Router.extend
       return
 
   ###
-  Just a dummy, authorised route handler. To be continued …
+  Authorised route changing page to a CourseView.
+
+  It fetches a course, changes the page to the
+  CourseView (parameterized with that course).
   ###
   course:
     requireSession() \
     (id) ->
-      alert "Show course: '#{id}'"
+
+      course = new tw.model.Course course_id: id
+
+      $.mobile.showPageLoadingMsg()
+
+      course.fetch()
+        .done =>
+          @changePage new tw.ui.CourseView(model: course)
+          return
+
+      # # Variant b.) fetch and View listens to changes, re-rendering if necessary
+      # course.fetch()
+      # @changePage new tw.ui.CourseView(model: course)
+
       return
 
   ###

@@ -170,3 +170,27 @@ tw.ui.MyCoursesItemView = Backbone.View.extend
   render: ->
     @$el.html @template @model.toJSON()
     @
+
+###
+This view shows the content of a course.
+###
+tw.ui.CourseView = Backbone.View.extend
+
+  template: compileTemplate("course")
+
+  initialize: ->
+    ###
+    Listen to changes and re-render
+    ###
+    @model.on "all", @render, @
+
+  render: ->
+    @$el.html @template @model.toJSON()
+
+    ###
+    Re-enhance the page, if re-rendering
+    ###
+    if @el.parentNode
+      @$el.page("destroy").page()
+
+    @
