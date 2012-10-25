@@ -1,3 +1,4 @@
+
 /*
 # Copyright (c) 2012 - <mlunzena@uos.de>
 #
@@ -95,7 +96,21 @@ credentials.
 
 
   tw.model.Course = Backbone.Model.extend({
-    idAttribute: "course_id"
+    idAttribute: "course_id",
+    /*
+      Set endpoint URL
+    */
+
+    urlRoot: function() {
+      return tw.API_URL + "api/courses/";
+    },
+    /*
+      The response is possibly namespaced → de-namespace it.
+    */
+
+    parse: function(response) {
+      return response.course || response;
+    }
   });
 
   /*
