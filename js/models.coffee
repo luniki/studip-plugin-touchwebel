@@ -73,6 +73,18 @@ Simple wrapper around the RestipPlugin endpoint '/api/courses/:id'
 tw.model.Course = Backbone.Model.extend
   idAttribute: "course_id"
 
+  ###
+  Set endpoint URL
+  ###
+  urlRoot: ->
+    tw.API_URL + "api/courses/"
+
+  ###
+  The response is possibly namespaced → de-namespace it.
+  ###
+  parse: (response) ->
+    response.course or response
+
 ###
 Another simple wrapper around the RestipPlugin endpoint
 '/api/courses'.  Needs a custom response parser, as it is namespaced
