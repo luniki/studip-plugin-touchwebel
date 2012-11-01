@@ -55,6 +55,15 @@ class TouchWebelAPI extends StudipPlugin implements APIPlugin
             ->conditions($conditions);
     }
 
+    /**
+     * Returns a list of wiki pages for the course with ID $course_id.
+     * Example result:
+     * [
+     *   "AnotherPage",
+     *   "SamplePage",
+     *   "WikiWikiWeb"
+     * ]
+     */
     static function listWikiPagesForCourse($course_id)
     {
         $query = "SELECT DISTINCT keyword FROM wiki WHERE range_id = ? ORDER BY keyword ASC";
@@ -63,11 +72,30 @@ class TouchWebelAPI extends StudipPlugin implements APIPlugin
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    /**
+     * Returns a single wiki page specified by $course_id and $page.
+     * Example result:
+     *  {
+     *  "range_id":"13d5dbc69a4ae94c087f427cb37315a2",
+     *  "keyword":"WikiWikiWeb",
+     *
+     *  "body":"!Test Page...",
+     *  "html_body":"<h4 class=\"content\">Test Page<\/h4>...",
+     *
+     *  "user_id":"205f3efb7997a0fc9755da2b535038da",
+     *  "chdate":"1325606060",
+     *  "version":"3"
+     *  }
+     */
     static function getWikiPageForCourse($course_id, $page)
     {
+        require_once 'lib/wiki.inc.php';
+
         $query = "SELECT * FROM wiki WHERE range_id = ? AND keyword = ? ORDER BY version DESC LIMIT 1";
         $stmt = DBManager::get()->prepare($query);
         $stmt->execute(array($course_id, $page));
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result['html_body'] = wikiReady($result['body']);
+        return $result;
     }
 }
