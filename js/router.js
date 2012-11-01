@@ -1,3 +1,4 @@
+
 /*
 # Copyright (c) 2012 - <mlunzena@uos.de>
 #
@@ -81,12 +82,21 @@ valid for authorised users. Otherwise `redirect` to the #login page.
     */
 
     myCourses: requireSession()(function() {
-      var courses;
+      var courses,
+        _this = this;
       courses = new tw.model.Courses();
-      courses.fetch();
-      this.changePage(new tw.ui.MyCoursesView({
-        collection: courses
-      }));
+      $.mobile.showPageLoadingMsg();
+      courses.fetch().done(function() {
+        _this.changePage(new tw.ui.MyCoursesView({
+          collection: courses
+        }));
+      });
+      /*
+            # Variant B.
+            courses.fetch()
+            @changePage new tw.ui.MyCoursesView(collection: courses)
+      */
+
     }),
     /*
       Just a dummy, authorised route handler. To be continued …

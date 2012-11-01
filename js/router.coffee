@@ -73,8 +73,19 @@ tw.router.AppRouter = Backbone.Router.extend
     requireSession() \
     ->
       courses = new tw.model.Courses()
+
+      $.mobile.showPageLoadingMsg()
+
+      courses.fetch().done =>
+        @changePage new tw.ui.MyCoursesView(collection: courses)
+        return
+
+      ###
+      # Variant B.
       courses.fetch()
       @changePage new tw.ui.MyCoursesView(collection: courses)
+      ###
+
       return
 
   ###
