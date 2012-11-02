@@ -47,7 +47,7 @@ class TouchWebelAPI extends StudipPlugin implements APIPlugin
         $router->get('/courses/:course_id/wiki/:page', function ($course_id, $page) use ($router) {
                 $page = TouchWebelAPI::getWikiPageForCourse($course_id, $page);
                 if (empty($page)) {
-                    $router->halt(404, 'Not found.');
+                    $router->halt(204);
                     return;
                 }
                 $router->render($page);
@@ -94,8 +94,11 @@ class TouchWebelAPI extends StudipPlugin implements APIPlugin
         $query = "SELECT * FROM wiki WHERE range_id = ? AND keyword = ? ORDER BY version DESC LIMIT 1";
         $stmt = DBManager::get()->prepare($query);
         $stmt->execute(array($course_id, $page));
+
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $result['html_body'] = wikiReady($result['body']);
+        if (!empty($result)) {
+            $result['html_body'] = wikiReady($result['body']);
+        }
         return $result;
     }
 }
