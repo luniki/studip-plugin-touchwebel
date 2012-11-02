@@ -99,11 +99,24 @@ valid for authorised users. Otherwise `redirect` to the #login page.
 
     }),
     /*
-      Just a dummy, authorised route handler. To be continued …
+      Authorised route changing page to a CourseView.
+    
+      It fetches a course, changes the page to the
+      CourseView (parameterized with that course).
     */
 
     course: requireSession()(function(id) {
-      alert("Show course: '" + id + "'");
+      var course,
+        _this = this;
+      course = new tw.model.Course({
+        course_id: id
+      });
+      $.mobile.showPageLoadingMsg();
+      course.fetch().done(function() {
+        _this.changePage(new tw.ui.CourseView({
+          model: course
+        }));
+      });
     }),
     /*
       Unauthorised route changing page to a HomeView.
