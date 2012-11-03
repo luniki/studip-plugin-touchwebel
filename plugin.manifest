@@ -1,6 +1,5 @@
 pluginname=TouchWebel
 pluginclassname=TouchWebel
-pluginclassname=TouchWebelAPI
 origin=elan-ev
-version=0.0.3
+version=0.0.4
 studipMinVersion=2.3
