@@ -60,10 +60,16 @@ class TouchWebel extends StudipPlugin implements SystemPlugin
     private function getTemplateArgs()
     {
         return array('assets_url' => $this->getPluginUrl(),
-                     'plugin_url' => PluginEngine::getURL($this, array(), ''),
-                     'api_url'    => PluginEngine::getURL("RestipPlugin", array(), ''),
+                     'plugin_url' => $this->pluginURL($this),
+                     'api_url'    => $this->pluginURL("RestipPlugin"),
                      'userid'     => $GLOBALS['user']->id,
                      'username'   => $GLOBALS['user']->username);
+    }
+
+    private function pluginURL($plugin)
+    {
+        $url = PluginEngine::getURL($plugin, array(), '');
+        return current(explode('?', $url));
     }
 
     private function fail($code, $reason)
